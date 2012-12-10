@@ -35,6 +35,7 @@ class IronMQChannel(BaseChannel):
 
     def _purge(self, queue):
         self.client.clearQueue(queue)
+        return 0
 
     def _size(self, queue):
         try:
