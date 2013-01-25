@@ -10,7 +10,8 @@ class IronMQChannel(BaseChannel):
     @property
     def client(self):
         if self._client is None:
-            self._client = IronMQ()
+            conninfo = self.connection.client
+            self._client = IronMQ(project_id = conninfo.userid, token = conninfo.password)
 
         return self._client
 
