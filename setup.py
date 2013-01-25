@@ -4,7 +4,7 @@ setup(
     name = "iron_mq_celery",
     packages = ["iron_mq_celery"],
     install_requires = ["iron_mq", "celery"],
-    version = "0.0.1",
+    version = "0.0.2",
     description = "IronMQ transport for Celery",
     author = "Iron.io",
     author_email = "info@iron.io",
