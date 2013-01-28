@@ -2,7 +2,7 @@ from unittest2 import TestCase
 
 from kombu import Connection, Exchange, Queue, Consumer, Producer
 from iron_mq import IronMQ
-import iron_mq_celery
+import iron_celery
 
 class test_basic(TestCase):
 

@@ -9,6 +9,6 @@
 
 ## How to use
 
-1. `pip install iron_mq_celery`
-2. in the place (tasks file) you have `from celery import Celery` add `import iron_mq_celery`
+1. `pip install iron_celery`
+2. in the place (tasks file) you have `from celery import Celery` add `import iron_celery`
 3. use broker url `ironmq://`
