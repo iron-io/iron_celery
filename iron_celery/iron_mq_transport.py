@@ -45,17 +45,13 @@ class IronMQChannel(BaseChannel):
         parsed_message = loads(message['body'])
 
         if queue in self._noack_queues:
-            print "DELETE IN GET"
             self.client.deleteMessage(queue, message['id'])
         else:
-            print "RESERVE IN GET"
             parsed_message['properties']['delivery_info'].update({'ironmq_message_id': message['id'], 'ironmq_queue': queue})
 
         return parsed_message
 
     def basic_ack(self, delivery_tag):
-        print "DELETE IN ACK"
-
         delivery_info = self.qos.get(delivery_tag).delivery_info
 
         try:
