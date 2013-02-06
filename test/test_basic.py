@@ -82,11 +82,11 @@ class test_basic(TestCase):
         self.assertEqual(len(_received1) + len(_received2), 20)
 
         # compression
-        producer.publish({'compressed': True},
-                         routing_key='test_transport_iron',
-                         compression='zlib')
-        m = self.q(consumer_channel).get()
-        self.assertDictEqual(m.payload, {'compressed': True})
+        #producer.publish({'compressed': True},
+        #                 routing_key='test_transport_iron',
+        #                 compression='zlib')
+        #m = self.q(consumer_channel).get()
+        #self.assertDictEqual(m.payload, {'compressed': True})
 
         # queue.delete
         for i in range(10):
