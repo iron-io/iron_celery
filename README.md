@@ -36,7 +36,8 @@ where the URL format is:
 
     ironmq://project_id:token@
 
-you must *remember to include the "@" at the end*.
+The project_id and token are for your Iron.io account, you can find these in the [Iron.io HUD](http://hud.iron.io).
+You must *remember to include the "@" at the end*.
 
 The login credentials can also be set using the environment variables
 :envvar:`IRON_TOKEN` and :envvar:`IRON_PROJECT_ID`, which are set automatically if you use the IronMQ Heroku add-on.
