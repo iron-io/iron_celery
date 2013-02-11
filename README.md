@@ -1,4 +1,4 @@
-## [IronMQ](http://iron.io/mq) transport and [IronCache](http://iron.io/cache) backend for Celery
+## [IronMQ](http://iron.io/mq) broker and [IronCache](http://iron.io/cache) result store for [Celery](http://celeryproject.org/)
 
 - Cloud message queue and caching services
 - No servers
@@ -28,7 +28,7 @@ First, you'll need to import the iron_celery library right after you import Cele
 
     celery = Celery('mytasks', broker='ironmq://', backend='ironcache://')
 
-You have to specify IronMQ in the broker URL:
+To use IronMQ, the broker URL should be in this format:
 
     BROKER_URL = 'ironmq://ABCDEFGHIJKLMNOPQRST:ZYXK7NiynGlTogH8Nj+P9nlE73sq3@'
 
