@@ -80,9 +80,6 @@ CELERY_RESULT_BACKEND = 'ironcache://project_id:token@'
 import djcelery
 import iron_celery
 
-# Import your Celery tasks
-from celerytest.tasks import add
-
 djcelery.setup_loader()
 ```
 
