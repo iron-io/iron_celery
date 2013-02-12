@@ -60,7 +60,7 @@ Results
 You can store results in IronCache with the same Iron.io credentials, just set the results URL with the same syntax
 as the broker URL, but changing the start to `ironcache`:
 
-    ironcache:://project_id:token@
+    CELERY_RESULT_BACKEND = 'ironcache:://project_id:token@'
 
 This will default to a cache named "Celery", if you want to change that:
 
