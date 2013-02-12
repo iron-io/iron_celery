@@ -8,6 +8,8 @@
 Installation
 ============
 
+Note: We recommend using [virtualenv](http://www.virtualenv.org/) to avoid any dependency issues.
+
 For IronMQ support, you'll need the [iron_celery](http://github.com/iron-io/iron_celery) library:
 
 .. code-block:: bash
@@ -63,3 +65,24 @@ as the broker URL, but changing the start to `ironcache`:
 This will default to a cache named "Celery", if you want to change that:
 
     ironcache:://project_id:token@/awesomecache
+
+Django - Using iron_celery with [Django](https://www.djangoproject.com/)
+======
+
+Setup celery with Django as you [normally would](http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html),
+but add `import iron_celery` and set the BROKER_URL to the URL's above. For example, at the top of your Django `settings.py` file:
+
+```python
+# NOTE: these must go before djcelery.setup_loader() line
+BROKER_URL = 'ironmq://project_id:token@'
+CELERY_RESULT_BACKEND = 'ironcache://project_id:token@'
+
+import djcelery
+import iron_celery
+from celerytest.tasks import add
+
+djcelery.setup_loader()
+```
+
+You can test it by going through the [First Steps with Django](http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html)
+guide in the Celery documentation.
