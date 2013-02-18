@@ -12,13 +12,9 @@ Note: We recommend using [virtualenv](http://www.virtualenv.org/) to avoid any d
 
 For IronMQ support, you'll need the [iron_celery](http://github.com/iron-io/iron_celery) library:
 
-.. code-block:: bash
-
     $ pip install iron_celery
 
 As well as an [Iron.io account](http://www.iron.io). Sign up for free at [iron.io](http://www.iron.io).
-
-.. _broker-ironmq-configuration:
 
 Configuration
 =============
