@@ -14,7 +14,7 @@ For IronMQ support, you'll need the [iron_celery](http://github.com/iron-io/iron
 
     $ pip install iron_celery
 
-As well as an [Iron.io account](http://www.iron.io). Sign up for free at [iron.io](http://www.iron.io).
+As well as an Iron.io account. Sign up for free at [Iron.io](http://www.iron.io/celery).
 
 Configuration
 =============
