@@ -12,7 +12,7 @@ class IronCacheBackend(KeyValueStoreBackend):
     def __init__(self, url = None, *args, **kwargs):
         super(IronCacheBackend, self).__init__(*args, **kwargs)
 
-        _, self._host, _, self._project_id, self._token, self._ncache, __ = _parse_url(url)
+        _, self._host, _, self._project_id, self._token, self._ncache, _ = _parse_url(url)
 
         if self._ncache == None:
             self._ncache = "Celery" 

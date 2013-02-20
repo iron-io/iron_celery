@@ -62,7 +62,11 @@ class IronMQChannel(BaseChannel):
         super(IronMQChannel, self).basic_ack(delivery_tag)
 
     def _purge(self, queue):
-        self.client.clearQueue(queue)
+        try
+            self.client.clearQueue(queue)
+        except:
+            pass
+
         return 0
 
     def _size(self, queue):
