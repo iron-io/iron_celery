@@ -24,19 +24,31 @@ class IronMQChannel(BaseChannel):
     def basic_consume(self, queue, no_ack, *args, **kwargs):
         if no_ack:
             self._noack_queues.add(queue)
+
         return super(IronMQChannel, self).basic_consume(queue, no_ack, *args, **kwargs)
 
     def basic_cancel(self, consumer_tag):
         if consumer_tag in self._consumers:
             queue = self._tag_to_queue[consumer_tag]
             self._noack_queues.discard(queue)
+
         return super(IronMQChannel, self).basic_cancel(consumer_tag)
 
     def _put(self, queue, message, **kwargs):
-        self.client.postMessage(queue, [dumps(message)])
+        if 'iron_mq_timeout' in message['properties']:
+            timeout = message['properties']['iron_mq_timeout']
+            self.client.postMessage(queue, [{'body': dumps(message), 'timeout': timeout}])
+        else:
+            self.client.postMessage(queue, [dumps(message)])
 
     def _get(self, queue):
         messages = self.client.getMessage(queue)
+
+        if messages is None:
+            raise Empty()
+
+        if messages["messages"] is None:
+            raise Empty()
 
         if len(messages["messages"]) == 0:
             raise Empty()

@@ -81,3 +81,12 @@ djcelery.setup_loader()
 
 You can test it by going through the [First Steps with Django](http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html)
 guide in the Celery documentation.
+
+Troubleshooting
+======
+
+If you are using countdown or eta, make sure to use iron_mq_timeout parameter as well (otherwise message will be returned to the IronMQ queue before Celery will ack it).
+
+```python
+mytask.apply_async(args = ["Hello"], countdown = 60, iron_mq_timeout = 90)
+```
