@@ -105,7 +105,6 @@ class IronMQChannel(BaseChannel):
             timeout+=0.5
             if timeout is not None: time.sleep(timeout)
             tryAgain(self, queue, retries, timeout)
-        return messages
 
 class IronMQTransport(BaseTransport):
     Channel = IronMQChannel
