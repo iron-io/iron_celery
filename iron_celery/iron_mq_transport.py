@@ -42,7 +42,10 @@ class IronMQChannel(BaseChannel):
             self.client.postMessage(queue, [dumps(message)])
 
     def _get(self, queue):
-        messages = self.client.getMessage(queue)
+        try:
+            messages = self.client.getMessage(queue)
+        except:
+            return Empty()
 
         if messages is None:
             raise Empty()
