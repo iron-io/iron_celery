@@ -3,7 +3,6 @@ from kombu.transport.virtual import Channel as BaseChannel
 from kombu.transport.virtual import Transport as BaseTransport
 from anyjson import loads, dumps
 from Queue import Empty
-import time
 
 class IronMQChannel(BaseChannel):
     _client = None
@@ -43,7 +42,10 @@ class IronMQChannel(BaseChannel):
             self.client.postMessage(queue, [dumps(message)])
 
     def _get(self, queue):
-        messages = self.tryGetMessages(self, queue)
+        try:
+            messages = self.client.getMessage(queue)
+        except:
+            return Empty()
 
         if messages is None:
             raise Empty()
@@ -89,22 +91,6 @@ class IronMQChannel(BaseChannel):
             return 0
 
         return details["size"]
-
-    def tryGetMessages(self, queue, retries=0, timeout=0.0):
-        if retries > 100: return
-        try:
-            messages = self.client.getMessage(queue)
-            return messages
-        except ConnectionError:
-            retries+=1
-            timeout+=0.5
-            if timeout is not None: time.sleep(timeout)
-            tryAgain(self, queue, retries, timeout)
-        except BadStatusLine:
-            retries+=1
-            timeout+=0.5
-            if timeout is not None: time.sleep(timeout)
-            tryAgain(self, queue, retries, timeout)
 
 class IronMQTransport(BaseTransport):
     Channel = IronMQChannel
