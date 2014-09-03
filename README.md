@@ -28,14 +28,29 @@ First, you'll need to import the iron_celery library right after you import Cele
 
 To use IronMQ, the broker URL should be in this format:
 
-    BROKER_URL = 'ironmq://ABCDEFGHIJKLMNOPQRST:ZYXK7NiynGlTogH8Nj+P9nlE73sq3@'
+    BROKER_URL = 'ironmq://ABCDEFGHIJKLMNOPQRST:ZYXK7NiynGlTogH8Nj+P9nlE73sq3@?connect_timeout=20'
 
 where the URL format is:
 
-    ironmq://project_id:token@
+    ironmq://project_id:token@connect_timeout
 
 The project_id and token are for your Iron.io account, you can find these in the [Iron.io HUD](http://hud.iron.io).
 You must *remember to include the "@" at the end*.
+
+You can set polling interval as following:
+
+    BROKER_TRANSPORT_OPTIONS={
+        'polling_interval': 5.0
+    }
+    
+You can change the name of the default queue by using the following configuration:    
+
+    from kombu import Exchange, Queue
+    
+    CELERY_DEFAULT_QUEUE='new_queue_name',
+    CELERY_QUEUES=(
+        Queue('new_queue_name', Exchange('new_queue_name'), routing_key='new_queue_name'),
+    )
 
 The login credentials can also be set using the environment variables
 :envvar:`IRON_TOKEN` and :envvar:`IRON_PROJECT_ID`, which are set automatically if you use the IronMQ Heroku add-on.
