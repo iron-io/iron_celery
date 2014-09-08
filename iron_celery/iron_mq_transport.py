@@ -1,3 +1,4 @@
+from requests import HTTPError
 from iron_mq import IronMQ
 from kombu.transport.virtual import Channel as BaseChannel
 from kombu.transport.virtual import Transport as BaseTransport
@@ -13,7 +14,7 @@ class IronMQChannel(BaseChannel):
         if self._client is None:
             conninfo = self.connection.client
             hostname = conninfo.hostname
-            self._client = IronMQ(project_id = conninfo.userid, token = conninfo.password, host = None if hostname == "localhost" else hostname)
+            self._client = IronMQ(project_id = conninfo.userid, token = conninfo.password, host = None if hostname == "localhost" else hostname, api_version=3)
 
         return self._client
 
@@ -34,17 +35,21 @@ class IronMQChannel(BaseChannel):
 
         return super(IronMQChannel, self).basic_cancel(consumer_tag)
 
-    def _put(self, queue, message, **kwargs):
+    def _put(self, queue_name, message, **kwargs):
+        queue = self.client.queue(queue_name)
         if 'iron_mq_timeout' in message['properties']:
             timeout = message['properties']['iron_mq_timeout']
-            self.client.postMessage(queue, [{'body': dumps(message), 'timeout': timeout}])
+            queue.post({'body': dumps(message), 'timeout': timeout})
         else:
-            self.client.postMessage(queue, [dumps(message)])
+            queue.post(dumps(message))
 
-    def _get(self, queue):
+    def _get(self, queue_name):
+        queue = self.client.queue(queue_name)
         try:
-            messages = self.client.getMessage(queue)
-        except:
+            messages = queue.reserve()
+        except HTTPError as e:
+            if int(e.response.status_code) == 404:
+                raise Empty()
             return Empty()
 
         if messages is None:
@@ -59,34 +64,35 @@ class IronMQChannel(BaseChannel):
         message = messages["messages"][0]
         parsed_message = loads(message['body'])
 
-        if queue in self._noack_queues:
-            self.client.deleteMessage(queue, message['id'])
+        if queue_name in self._noack_queues:
+            queue.delete(message['id'], message['reservation_id'])
         else:
-            parsed_message['properties']['delivery_info'].update({'ironmq_message_id': message['id'], 'ironmq_queue': queue})
+            parsed_message['properties']['delivery_info'].update({'ironmq_message_id': message['id'], 'ironmq_reservation_id': message['reservation_id'], 'ironmq_queue': queue_name})
 
         return parsed_message
 
     def basic_ack(self, delivery_tag):
         delivery_info = self.qos.get(delivery_tag).delivery_info
+        queue = self.client.queue(delivery_info['ironmq_queue'])
 
         try:
-            self.client.deleteMessage(delivery_info['ironmq_queue'], delivery_info['ironmq_message_id'])
+            queue.delete(delivery_info['ironmq_message_id'], delivery_info['ironmq_reservation_id'])
         except KeyError:
             pass
 
         super(IronMQChannel, self).basic_ack(delivery_tag)
 
-    def _purge(self, queue):
+    def _purge(self, queue_name):
         try:
-            self.client.clearQueue(queue)
+            self.client.clearQueue(queue_name)
         except:
             pass
 
         return 0
 
-    def _size(self, queue):
+    def _size(self, queue_name):
         try:
-            details = self.client.getQueueDetails(queue)
+            details = self.client.getQueueDetails(queue_name)
         except:
             return 0
 
