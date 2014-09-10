@@ -12,7 +12,7 @@ Note: We recommend using [virtualenv](http://www.virtualenv.org/) to avoid any d
 
 For IronMQ support, you'll need the [iron_celery](http://github.com/iron-io/iron_celery) library:
 
-    $ pip install iron_celery
+    $ pip install iron-celery-v3
 
 As well as an Iron.io account. Sign up for free at [Iron.io](http://www.iron.io/celery).
 
@@ -28,11 +28,11 @@ First, you'll need to import the iron_celery library right after you import Cele
 
 To use IronMQ, the broker URL should be in this format:
 
-    BROKER_URL = 'ironmq://ABCDEFGHIJKLMNOPQRST:ZYXK7NiynGlTogH8Nj+P9nlE73sq3@?connect_timeout=20'
+    BROKER_URL = 'ironmq://ABCDEFGHIJKLMNOPQRST:ZYXK7NiynGlTogH8Nj+P9nlE73sq3@some_v3_host?connect_timeout=20'
 
 where the URL format is:
 
-    ironmq://project_id:token@connect_timeout
+    ironmq://project_id:token@host?connect_timeout
 
 The project_id and token are for your Iron.io account, you can find these in the [Iron.io HUD](http://hud.iron.io).
 You must *remember to include the "@" at the end*.
