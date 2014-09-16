@@ -45,7 +45,7 @@ class IronMQChannel(BaseChannel):
         try:
             messages = self.client.getMessage(queue)
         except:
-            return Empty()
+            raise Empty()
 
         if messages is None:
             raise Empty()
