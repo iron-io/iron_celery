@@ -1,4 +1,3 @@
-from requests import HTTPError
 from iron_mq import IronMQ
 from kombu.transport.virtual import Channel as BaseChannel
 from kombu.transport.virtual import Transport as BaseTransport
@@ -45,10 +44,8 @@ class IronMQChannel(BaseChannel):
     def _get(self, queue):
         try:
             messages = self.client.getMessage(queue)
-        except HTTPError as e:
-            if int(e.response.status_code) >= 400:
-                raise Empty()
-            return Empty()
+        except:
+            raise Empty()
 
         if messages is None:
             raise Empty()
