@@ -4,7 +4,7 @@ setup(
     name = "iron-celery-v3",
     packages = ["iron_celery"],
     install_requires = ["iron-mq-v3", "iron_cache", "celery"],
-    version = "0.4.1",
+    version = "0.4.3",
     description = "IronMQ transport and IronCache backend for Celery",
     author = "Iron.io",
     author_email = "info@iron.io",
