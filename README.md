@@ -59,8 +59,7 @@ By default long-polling is enabled. To disable long-polling do the following:
 
 Default max amount of messages is 10.
 
-**Note:** If you want to increment/decrement amount of messages, you need to change value of CELERYD_PREFETCH_MULTIPLIER too or
-equal to zero:
+**Note:** If you want to increment/decrement amount of messages, you need to change value of CELERYD_PREFETCH_MULTIPLIER too or equal to zero:
 
     BROKER_TRANSPORT_OPTIONS={
         'max_message_count': 50
