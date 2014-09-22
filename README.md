@@ -32,16 +32,39 @@ To use IronMQ, the broker URL should be in this format:
 
 where the URL format is:
 
-    ironmq://project_id:token@connect_timeout
+    ironmq://project_id:token@?connect_timeout
 
 The project_id and token are for your Iron.io account, you can find these in the [Iron.io HUD](http://hud.iron.io).
 You must *remember to include the "@" at the end*.
+
+### Polling interval configuration
 
 You can set polling interval as following:
 
     BROKER_TRANSPORT_OPTIONS={
         'polling_interval': 5.0
     }
+    
+### Long-polling configuration
+
+By default long-polling is enabled. To disable long-polling do the following:
+
+    BROKER_TRANSPORT_OPTIONS={
+        'long_polling': False
+    }
+
+**Note:** server closes connection after 30 seconds if there were no messages in queue during this interval.
+    
+### Bulk processing configuration
+
+Default max amount of messages is 10.
+
+**Note:** If you want to increment/decrement amount of messages, you need to change value of CELERYD_PREFETCH_MULTIPLIER too or equal to zero:
+
+    BROKER_TRANSPORT_OPTIONS={
+        'max_message_count': 50
+    },
+    CELERYD_PREFETCH_MULTIPLIER = 0
     
 You can change the name of the default queue by using the following configuration:    
 
