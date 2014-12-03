@@ -3,7 +3,10 @@ from iron_mq import IronMQ
 from kombu.transport.virtual import Channel as BaseChannel
 from kombu.transport.virtual import Transport as BaseTransport
 from anyjson import loads, dumps
-from Queue import Empty
+try:
+    from queue import Empty
+except ImportError:  # Python 2 compatibility
+    from Queue import Empty
 from kombu.transport.virtual import scheduling
 from kombu.utils.encoding import bytes_to_str
 
