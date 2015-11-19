@@ -19,6 +19,7 @@ class IronMQChannel(BaseChannel):
     _extra_consumer_tags = set()
     _default_wait_time_seconds = 30
     _max_message_count = 10
+    _iron_mq_timeout = 60
 
     @property
     def client(self):
@@ -28,11 +29,15 @@ class IronMQChannel(BaseChannel):
             self._queue_message_cache = collections.deque()
             lp_enabled = self.connection.client.transport_options.get('long_polling', True)
             message_count = self.connection.client.transport_options.get('max_message_count', None)
+            iron_mq_timeout = self.connection.client.transport_options.get('iron_mq_timeout', None)
             if not lp_enabled:
                 self._default_wait_time_seconds = None
 
             if message_count:
                 self._max_message_count = message_count
+
+            if iron_mq_timeout:
+                self._iron_mq_timeout = iron_mq_timeout
 
             self._client = IronMQ(project_id=conninfo.userid, token=conninfo.password,
                                   host=None if hostname == "localhost" else hostname)
@@ -105,7 +110,7 @@ class IronMQChannel(BaseChannel):
 
         q = self.client.queue(queue)
         try:
-            messages = q.reserve(max=count, wait=self._default_wait_time_seconds)
+            messages = q.reserve(max=count, wait=self._default_wait_time_seconds, timeout=self._iron_mq_timeout)
             return messages
         except:
             return None
@@ -126,11 +131,7 @@ class IronMQChannel(BaseChannel):
 
     def _put(self, queue_name, message, **kwargs):
         queue = self.client.queue(queue_name)
-        if 'iron_mq_timeout' in message['properties']:
-            timeout = message['properties']['iron_mq_timeout']
-            queue.post({'body': dumps(message), 'timeout': timeout})
-        else:
-            queue.post(dumps(message))
+        queue.post(dumps(message))
 
     def _get(self, queue_name):
         if 'celery.pidbox' in queue_name:
@@ -141,7 +142,7 @@ class IronMQChannel(BaseChannel):
 
         queue = self.client.queue(queue_name)
         try:
-            messages = queue.reserve(wait=self._default_wait_time_seconds)
+            messages = queue.reserve(wait=self._default_wait_time_seconds, timeout=self._iron_mq_timeout)
         except:
             raise Empty()
 

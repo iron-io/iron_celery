@@ -98,7 +98,7 @@ as the broker URL, but changing the start to `ironcache`:
 
 This will default to a cache named "Celery", if you want to change that:
 
-    ironcache:://project_id:token@/awesomecache
+    ironcache://project_id:token@/awesomecache
 
 Django - Using iron_celery with [Django](https://www.djangoproject.com/)
 ======
@@ -123,8 +123,13 @@ guide in the Celery documentation.
 Troubleshooting
 ======
 
-If you are using countdown or eta, make sure to use iron_mq_timeout parameter as well (otherwise message will be returned to the IronMQ queue before Celery will ack it).
+If you are using countdown or eta, make sure to use `iron_mq_timeout` option as well (otherwise message will be returned to the IronMQ queue before Celery will ack it).
+
+`iron_mq_timeout` default value is 60 sec. You can change as following:
 
 ```python
-mytask.apply_async(args = ["Hello"], countdown = 60, iron_mq_timeout = 90)
+    BROKER_TRANSPORT_OPTIONS={
+        'iron_mq_timeout': 90
+    }
 ```
+learn more about `iron_mq_timeout` [here](https://github.com/iron-io/iron_mq_python#reserve-messages)
